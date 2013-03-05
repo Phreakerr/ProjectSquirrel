@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Insert title here</title>
+</head>
+<script src="http://yui.yahooapis.com/3.8.0/build/yui/yui-min.js"></script>
+<script>   
+
+YUI().use('node', 'event', 'yql', function(Y) {
+	   // The code for manipulating DOM, handling events,   
+	   // calling the YQL Web service, and parsing   
+	   // the response goes here.  
+	   
+	   Y.one("#buttonID").on('click',function() {
+	 	var stories = "<div><ul>";	// initial DOM elements 
+		  
+		// Create url and yql_query
+		var url = "http://www.bbc.co.uk/sport/0/";
+		var yql_query = "select * from html where url='" + url + "'";
+		yql_query +=" and xpath='//div[@class=\"type-a-container-structural-3\"]//p'";
+		
+		// Create YQL object 
+		 Y.YQL(yql_query, function(response) {
+		       if(response.query.results){
+		   //      var no_stories = response.query.results.p.length;
+		         var paras = response.query.results.p;
+		         paras.forEach(function(node1,index) {
+		           if (node1.hasOwnProperty('content')) {
+		               stories += "<li>" + node1.content + "</a></li>";
+		   
+		           }
+		        });
+		       } else{
+		           stories += "Sorry, could not find any headlines for the category " + story + ". Please try another one.";
+		     	    
+		       }
+		       
+		       
+		       stories += "   aaa</ul></div>";
+		       Y.one('#result').append(stories);
+		       stories = "";
+		 
+		 });
+
+	   }); 
+	 });
+
+
+</script>
+
+<body>
+<b>Stories from bbc: </b> <input type='text' size='15' id='story1' value='world'/><br/><br/>
+<button id='buttonID'>Get Stories from bbc</button>
+<div id='result'></div>
+
+</body>
+</html>
